@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <style>
+    :root {
+      --bg: #0a0e14;
+      --bg-card: #111820;
+      --bg-input: #0d1117;
+      --border: #1e2a3a;
+      --border-glow: #1e3a5f;
+      --text: #e2e8f0;
+      --text-dim: #8b9cb5;
+      --text-muted: #4a5568;
+      --accent: #00ff88;
+      --accent-dim: rgba(0,255,136,0.08);
+      --danger: #ff4466;
+      --mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 420px;
+      min-height: 200px;
+      max-height: 600px;
+      overflow-y: auto;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    body::-webkit-scrollbar { width: 4px; }
+    body::-webkit-scrollbar-track { background: transparent; }
+    body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .logo .crab { font-size: 18px; }
+    .logo .usage { color: var(--text); }
+    .logo .claw { color: var(--accent); }
+    .version {
+      font-size: 9px;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 2px;
+    }
+    .nav button {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .nav button:hover { color: var(--text); background: var(--bg-card); }
+    .nav button.active {
+      color: var(--accent);
+      background: var(--accent-dim);
+      border-color: var(--border-glow);
+    }
+
+    /* Views */
+    .view { display: none; padding: 12px 16px 16px; }
+    .view.active { display: block; }
+
+    /* Dashboard */
+    .provider-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+    .provider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .provider-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .provider-icon { font-size: 14px; }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .refresh-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: var(--mono);
+    }
+    .refresh-btn:hover { color: var(--text); border-color: var(--text-muted); }
+    .refresh-btn.spinning { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .spend-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .spend-currency { color: var(--accent); font-size: 14px; }
+    .spend-value { font-size: 22px; font-weight: 700; }
+    .spend-label { color: var(--text-muted); font-size: 10px; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .stat-value { font-size: 13px; font-weight: 600; }
+    .stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .models-list {
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+    .models-title {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .model-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px 0;
+      font-size: 11px;
+    }
+    .model-name { color: var(--text-dim); }
+    .model-cost { color: var(--text); }
+
+    .error-box {
+      background: rgba(255,68,102,0.08);
+      border: 1px solid rgba(255,68,102,0.2);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--danger);
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .loading-bar {
+      height: 2px;
+      background: var(--border);
+      border-radius: 1px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+    .loading-bar-inner {
+      height: 100%;
+      width: 40%;
+      background: var(--accent);
+      border-radius: 1px;
+      animation: loading 1.2s ease-in-out infinite;
+    }
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(350%); }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 30px 16px;
+      color: var(--text-dim);
+    }
+    .empty-state .icon { font-size: 28px; margin-bottom: 10px; }
+    .empty-state .title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .empty-state .desc { font-size: 11px; color: var(--text-muted); }
+
+    /* Config view */
+    .config-section {
+      margin-bottom: 12px;
+    }
+    .config-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .config-input-row {
+      display: flex;
+      gap: 6px;
+    }
+    .config-input {
+      flex: 1;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text);
+      outline: none;
+    }
+    .config-input:focus { border-color: var(--accent); }
+    .config-input::placeholder { color: var(--text-muted); }
+    .btn {
+      background: var(--accent-dim);
+      border: 1px solid var(--border-glow);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn:hover { background: var(--accent); color: var(--bg); }
+    .btn-danger {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-danger:hover { color: var(--danger); border-color: var(--danger); }
+    .saved-badge {
+      font-size: 10px;
+      color: var(--accent);
+    }
+
+    .coming-soon {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .coming-soon-title {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .coming-soon-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .coming-soon-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      opacity: 0.4;
+      font-size: 10px;
+    }
+
+    .footer {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <span class="crab">🦀</span>
+      <span><span class="usage">Usage</span><span class="claw">Claw</span></span>
+      <span class="version">v0.1.0</span>
+    </div>
+    <div class="nav">
+      <button class="active" id="nav-dashboard" data-view="dashboard">Dashboard</button>
+      <button id="nav-config" data-view="config">Config</button>
+    </div>
+  </div>
+
+  <!-- Dashboard View -->
+  <div id="view-dashboard" class="view active">
+    <div id="dashboard-content"></div>
+  </div>
+
+  <!-- Config View -->
+  <div id="view-config" class="view">
+    <div id="config-content"></div>
+  </div>
+
+  <div class="footer">
+    All data stored locally · <a href="https://usageclaw.com" target="_blank">usageclaw.com</a>
+  </div>
+
+  <script src="src/popup.js"></script>
+</body>
+</html>
