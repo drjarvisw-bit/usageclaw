@@ -17,7 +17,7 @@ export function Settings() {
       </div>
 
       <div className="flex flex-col gap-3">
-        {PROVIDERS.map(provider => (
+        {PROVIDERS.filter(p => p.status === 'active').map(provider => (
           <KeyInput
             key={provider.id}
             provider={provider}
@@ -26,6 +26,29 @@ export function Settings() {
           />
         ))}
       </div>
+
+      {PROVIDERS.some(p => p.status === 'coming-soon') && (
+        <div className="mt-2">
+          <div className="font-[var(--font-mono)] text-[11px] text-[var(--text-muted)] mb-3 flex items-center gap-2">
+            <span>⏳</span>
+            <span>coming soon — waiting for usage API access</span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {PROVIDERS.filter(p => p.status === 'coming-soon').map(p => (
+              <div
+                key={p.id}
+                className="flex items-center gap-2.5 px-3.5 py-3 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] opacity-40"
+              >
+                <span className="text-base" style={{ color: p.color }}>{p.icon}</span>
+                <div>
+                  <div className="font-[var(--font-mono)] text-[12px] text-[var(--text-secondary)]">{p.name}</div>
+                  <div className="font-[var(--font-mono)] text-[10px] text-[var(--text-muted)]">{p.description}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="mt-2">
         <div className="flex gap-3 p-4 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl">
