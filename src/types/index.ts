@@ -1,9 +1,13 @@
-export type Provider = 'openai' | 'anthropic' | 'google'
+export type Provider = 'openai' | 'anthropic' | 'google' | 'deepseek' | 'minimax' | 'qwen' | 'zhipu'
 
 export interface ApiKeys {
   openai?: string
   anthropic?: string
   google?: string
+  deepseek?: string
+  minimax?: string
+  qwen?: string
+  zhipu?: string
 }
 
 export interface UsageData {
@@ -73,5 +77,33 @@ export const PROVIDERS: ProviderConfig[] = [
     color: '#4285f4',
     icon: '◆',
     description: 'Gemini Pro, Flash, Ultra'
+  },
+  {
+    id: 'deepseek',
+    name: 'DeepSeek',
+    color: '#4D6BFE',
+    icon: '◇',
+    description: 'DeepSeek-V3, DeepSeek-R1'
+  },
+  {
+    id: 'minimax',
+    name: 'MiniMax',
+    color: '#FF6B35',
+    icon: '◎',
+    description: 'MiniMax-M2.5, M2.1, M2'
+  },
+  {
+    id: 'qwen',
+    name: 'Qwen (通义千问)',
+    color: '#FF6A00',
+    icon: '◐',
+    description: 'Qwen-Max, Qwen-Plus, Qwen-Turbo'
+  },
+  {
+    id: 'zhipu',
+    name: 'Zhipu GLM (智谱)',
+    color: '#2563EB',
+    icon: '◑',
+    description: 'GLM-4, GLM-4V, CogView'
   }
 ]

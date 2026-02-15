@@ -1,13 +1,4 @@
-import { Provider } from '../types'
-
-interface UsageResult {
-  totalSpend: number
-  limit: number | null
-  requests: number
-  inputTokens: number
-  outputTokens: number
-  models: { name: string; cost: number; requests: number }[]
-}
+import type { Provider, UsageResult } from '../types'
 
 const API_BASE = import.meta.env.DEV ? 'http://localhost:3001' : ''
 

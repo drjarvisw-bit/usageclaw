@@ -9,6 +9,10 @@ export function getMockUsage(provider: Provider): UsageResult {
     case 'openai': return mockOpenAI()
     case 'anthropic': return mockAnthropic()
     case 'google': return mockGoogle()
+    case 'deepseek': return mockDeepSeek()
+    case 'minimax': return mockMiniMax()
+    case 'qwen': return mockQwen()
+    case 'zhipu': return mockZhipu()
     default: return emptyUsage()
   }
 }
@@ -71,6 +75,77 @@ function mockGoogle(): UsageResult {
       { name: 'Gemini 2.0 Pro', cost: round(5.87 * jitter), requests: Math.floor(1_340 * jitter) },
       { name: 'Gemini 1.5 Flash', cost: round(1.12 * jitter), requests: Math.floor(980 * jitter) },
       { name: 'Gemini 1.5 Pro', cost: round(1.25 * jitter), requests: Math.floor(462 * jitter) },
+    ],
+  }
+}
+
+function mockDeepSeek(): UsageResult {
+  const jitter = 0.9 + Math.random() * 0.2
+  const today = new Date().getDate()
+  return {
+    totalSpend: round(8.92 * jitter),
+    limit: 50,
+    requests: Math.floor(15_230 * jitter),
+    inputTokens: Math.floor(32_100_000 * jitter),
+    outputTokens: Math.floor(12_400_000 * jitter),
+    dailySpend: generateDailySpend(0.6 * jitter, today),
+    models: [
+      { name: 'deepseek-chat', cost: round(3.21 * jitter), requests: Math.floor(8_900 * jitter) },
+      { name: 'deepseek-reasoner', cost: round(5.71 * jitter), requests: Math.floor(6_330 * jitter) },
+    ],
+  }
+}
+
+function mockMiniMax(): UsageResult {
+  const jitter = 0.9 + Math.random() * 0.2
+  const today = new Date().getDate()
+  return {
+    totalSpend: round(15.34 * jitter),
+    limit: null,
+    requests: Math.floor(6_840 * jitter),
+    inputTokens: Math.floor(14_500_000 * jitter),
+    outputTokens: Math.floor(5_800_000 * jitter),
+    dailySpend: generateDailySpend(1.1 * jitter, today),
+    models: [
+      { name: 'MiniMax-M2.5', cost: round(8.42 * jitter), requests: Math.floor(3_210 * jitter) },
+      { name: 'MiniMax-M2.1', cost: round(4.63 * jitter), requests: Math.floor(2_450 * jitter) },
+      { name: 'MiniMax-M2', cost: round(2.29 * jitter), requests: Math.floor(1_180 * jitter) },
+    ],
+  }
+}
+
+function mockQwen(): UsageResult {
+  const jitter = 0.9 + Math.random() * 0.2
+  const today = new Date().getDate()
+  return {
+    totalSpend: round(6.78 * jitter),
+    limit: null,
+    requests: Math.floor(9_120 * jitter),
+    inputTokens: Math.floor(16_700_000 * jitter),
+    outputTokens: Math.floor(5_900_000 * jitter),
+    dailySpend: generateDailySpend(0.5 * jitter, today),
+    models: [
+      { name: 'qwen-max', cost: round(3.45 * jitter), requests: Math.floor(2_100 * jitter) },
+      { name: 'qwen-plus', cost: round(2.11 * jitter), requests: Math.floor(4_320 * jitter) },
+      { name: 'qwen-turbo', cost: round(1.22 * jitter), requests: Math.floor(2_700 * jitter) },
+    ],
+  }
+}
+
+function mockZhipu(): UsageResult {
+  const jitter = 0.9 + Math.random() * 0.2
+  const today = new Date().getDate()
+  return {
+    totalSpend: round(11.56 * jitter),
+    limit: null,
+    requests: Math.floor(7_380 * jitter),
+    inputTokens: Math.floor(13_200_000 * jitter),
+    outputTokens: Math.floor(4_600_000 * jitter),
+    dailySpend: generateDailySpend(0.8 * jitter, today),
+    models: [
+      { name: 'glm-4', cost: round(5.87 * jitter), requests: Math.floor(3_420 * jitter) },
+      { name: 'glm-4-flash', cost: round(3.12 * jitter), requests: Math.floor(2_780 * jitter) },
+      { name: 'glm-4v', cost: round(2.57 * jitter), requests: Math.floor(1_180 * jitter) },
     ],
   }
 }

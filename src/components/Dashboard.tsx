@@ -21,11 +21,19 @@ export function Dashboard() {
   const openai = useUsageData('openai', keys.openai, demoMode && true)
   const anthropic = useUsageData('anthropic', keys.anthropic, demoMode && true)
   const google = useUsageData('google', keys.google, demoMode && true)
+  const deepseek = useUsageData('deepseek', keys.deepseek, demoMode && true)
+  const minimax = useUsageData('minimax', keys.minimax, demoMode && true)
+  const qwen = useUsageData('qwen', keys.qwen, demoMode && true)
+  const zhipu = useUsageData('zhipu', keys.zhipu, demoMode && true)
 
   const usageByProvider: Record<string, UsageResult | null> = {
     openai: openai.data,
     anthropic: anthropic.data,
     google: google.data,
+    deepseek: deepseek.data,
+    minimax: minimax.data,
+    qwen: qwen.data,
+    zhipu: zhipu.data,
   }
 
   const chartData = activeProviders

@@ -2,7 +2,7 @@
 // POST /api/usage { provider, apiKey }
 
 interface RequestBody {
-  provider: 'openai' | 'anthropic' | 'google'
+  provider: 'openai' | 'anthropic' | 'google' | 'deepseek' | 'minimax' | 'qwen' | 'zhipu'
   apiKey: string
 }
 
@@ -42,6 +42,18 @@ export default async function handler(req: Request) {
         break
       case 'google':
         result = await fetchGoogleUsage(apiKey)
+        break
+      case 'deepseek':
+        result = await fetchDeepSeekUsage(apiKey)
+        break
+      case 'minimax':
+        result = await fetchMiniMaxUsage(apiKey)
+        break
+      case 'qwen':
+        result = await fetchQwenUsage(apiKey)
+        break
+      case 'zhipu':
+        result = await fetchZhipuUsage(apiKey)
         break
       default:
         return new Response(JSON.stringify({ error: `Unknown provider: ${provider}` }), { status: 400, headers })
@@ -136,4 +148,128 @@ async function fetchAnthropicUsage(_apiKey: string) {
 async function fetchGoogleUsage(_apiKey: string) {
   // Google AI Studio doesn't expose usage via API
   throw new Error('Google AI usage API not publicly available yet')
+}
+
+async function fetchDeepSeekUsage(apiKey: string) {
+  // GET https://api.deepseek.com/user/balance
+  const res = await fetch('https://api.deepseek.com/user/balance', {
+    headers: { 'Authorization': `Bearer ${apiKey}` }
+  })
+
+  if (!res.ok) {
+    if (res.status === 401) throw new Error('Invalid API key')
+    throw new Error(`DeepSeek API ${res.status}: ${(await res.text()).slice(0, 200)}`)
+  }
+
+  const data = await res.json()
+  const balanceInfo = data.balance_infos?.[0]
+
+  const totalBalance = parseFloat(balanceInfo?.total_balance || '0')
+  const grantedBalance = parseFloat(balanceInfo?.granted_balance || '0')
+  const toppedUpBalance = parseFloat(balanceInfo?.topped_up_balance || '0')
+  const currency = balanceInfo?.currency || 'CNY'
+
+  // Convert CNY to USD approximately for display (1 CNY ≈ 0.14 USD)
+  const usdMultiplier = currency === 'CNY' ? 0.14 : 1
+
+  return {
+    provider: 'deepseek',
+    totalSpend: 0, // DeepSeek doesn't expose spend via API
+    limit: totalBalance * usdMultiplier,
+    requests: 0,
+    inputTokens: 0,
+    outputTokens: 0,
+    models: [],
+    balance: {
+      total: totalBalance,
+      granted: grantedBalance,
+      toppedUp: toppedUpBalance,
+      currency,
+      isAvailable: data.is_available
+    },
+    note: `Balance: ${currency} ${totalBalance} (granted: ${grantedBalance}, topped up: ${toppedUpBalance}). Detailed usage available at platform.deepseek.com`
+  }
+}
+
+async function fetchMiniMaxUsage(apiKey: string) {
+  // GET https://www.minimax.io/v1/api/openplatform/coding_plan/remains
+  const res = await fetch('https://www.minimax.io/v1/api/openplatform/coding_plan/remains', {
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
+    }
+  })
+
+  if (!res.ok) {
+    if (res.status === 401) throw new Error('Invalid API key')
+    if (res.status === 403) throw new Error('This API key does not have Coding Plan access')
+    throw new Error(`MiniMax API ${res.status}: ${(await res.text()).slice(0, 200)}`)
+  }
+
+  const data = await res.json()
+
+  return {
+    provider: 'minimax',
+    totalSpend: 0,
+    limit: null,
+    requests: 0,
+    inputTokens: 0,
+    outputTokens: 0,
+    models: [],
+    codingPlan: data,
+    note: 'Coding Plan usage. Detailed token usage available at platform.minimax.io'
+  }
+}
+
+async function fetchQwenUsage(apiKey: string) {
+  // Validate key by making a lightweight models list call
+  const res = await fetch('https://dashscope.aliyuncs.com/compatible-mode/v1/models', {
+    headers: { 'Authorization': `Bearer ${apiKey}` }
+  })
+
+  if (!res.ok) {
+    if (res.status === 401) throw new Error('Invalid API key')
+    // Also try international endpoint
+    const intlRes = await fetch('https://dashscope-intl.aliyuncs.com/compatible-mode/v1/models', {
+      headers: { 'Authorization': `Bearer ${apiKey}` }
+    })
+    if (!intlRes.ok) {
+      if (intlRes.status === 401) throw new Error('Invalid API key')
+      throw new Error(`DashScope API error: ${res.status}`)
+    }
+  }
+
+  return {
+    provider: 'qwen',
+    totalSpend: 0,
+    limit: null,
+    requests: 0,
+    inputTokens: 0,
+    outputTokens: 0,
+    models: [],
+    note: 'API key valid. Detailed usage available at dashscope.console.aliyun.com'
+  }
+}
+
+async function fetchZhipuUsage(apiKey: string) {
+  // Validate key by making a lightweight models list call
+  const res = await fetch('https://open.bigmodel.cn/api/paas/v4/models', {
+    headers: { 'Authorization': `Bearer ${apiKey}` }
+  })
+
+  if (!res.ok) {
+    if (res.status === 401) throw new Error('Invalid API key')
+    throw new Error(`Zhipu API ${res.status}: ${(await res.text()).slice(0, 200)}`)
+  }
+
+  return {
+    provider: 'zhipu',
+    totalSpend: 0,
+    limit: null,
+    requests: 0,
+    inputTokens: 0,
+    outputTokens: 0,
+    models: [],
+    note: 'API key valid. Detailed usage available at open.bigmodel.cn'
+  }
 }
