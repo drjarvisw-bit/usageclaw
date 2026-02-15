@@ -2,7 +2,7 @@
 // POST /api/usage { provider, apiKey }
 
 interface RequestBody {
-  provider: 'openai' | 'anthropic' | 'google' | 'deepseek' | 'minimax' | 'qwen' | 'zhipu'
+  provider: 'openai' | 'anthropic' | 'google' | 'deepseek' | 'minimax' | 'qwen' | 'zhipu' | 'together' | 'groq'
   apiKey: string
 }
 
@@ -54,6 +54,12 @@ export default async function handler(req: Request) {
         break
       case 'zhipu':
         result = await fetchZhipuUsage(apiKey)
+        break
+      case 'together':
+        result = await fetchTogetherUsage(apiKey)
+        break
+      case 'groq':
+        result = await fetchGroqUsage(apiKey)
         break
       default:
         return new Response(JSON.stringify({ error: `Unknown provider: ${provider}` }), { status: 400, headers })
@@ -271,5 +277,53 @@ async function fetchZhipuUsage(apiKey: string) {
     outputTokens: 0,
     models: [],
     note: 'API key valid. Detailed usage available at open.bigmodel.cn'
+  }
+}
+
+async function fetchTogetherUsage(apiKey: string) {
+  // Together AI has no public usage/billing API
+  // Validate key by listing models
+  const res = await fetch('https://api.together.xyz/v1/models', {
+    headers: { 'Authorization': `Bearer ${apiKey}` }
+  })
+
+  if (!res.ok) {
+    if (res.status === 401) throw new Error('Invalid API key')
+    throw new Error(`Together AI API ${res.status}: ${(await res.text()).slice(0, 200)}`)
+  }
+
+  return {
+    provider: 'together',
+    totalSpend: 0,
+    limit: null,
+    requests: 0,
+    inputTokens: 0,
+    outputTokens: 0,
+    models: [],
+    note: 'API key valid. Detailed usage available at api.together.ai/settings/billing'
+  }
+}
+
+async function fetchGroqUsage(apiKey: string) {
+  // Groq has no public usage/billing API (community feature request pending)
+  // Validate key by listing models
+  const res = await fetch('https://api.groq.com/openai/v1/models', {
+    headers: { 'Authorization': `Bearer ${apiKey}` }
+  })
+
+  if (!res.ok) {
+    if (res.status === 401) throw new Error('Invalid API key')
+    throw new Error(`Groq API ${res.status}: ${(await res.text()).slice(0, 200)}`)
+  }
+
+  return {
+    provider: 'groq',
+    totalSpend: 0,
+    limit: null,
+    requests: 0,
+    inputTokens: 0,
+    outputTokens: 0,
+    models: [],
+    note: 'API key valid. Detailed usage available at console.groq.com/settings/billing'
   }
 }

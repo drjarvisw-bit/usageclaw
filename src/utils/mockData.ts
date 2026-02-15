@@ -13,6 +13,8 @@ export function getMockUsage(provider: Provider): UsageResult {
     case 'minimax': return mockMiniMax()
     case 'qwen': return mockQwen()
     case 'zhipu': return mockZhipu()
+    case 'together': return mockTogether()
+    case 'groq': return mockGroq()
     default: return emptyUsage()
   }
 }
@@ -146,6 +148,45 @@ function mockZhipu(): UsageResult {
       { name: 'glm-4', cost: round(5.87 * jitter), requests: Math.floor(3_420 * jitter) },
       { name: 'glm-4-flash', cost: round(3.12 * jitter), requests: Math.floor(2_780 * jitter) },
       { name: 'glm-4v', cost: round(2.57 * jitter), requests: Math.floor(1_180 * jitter) },
+    ],
+  }
+}
+
+function mockTogether(): UsageResult {
+  const jitter = 0.9 + Math.random() * 0.2
+  const today = new Date().getDate()
+  return {
+    totalSpend: round(18.73 * jitter),
+    limit: null,
+    requests: Math.floor(11_240 * jitter),
+    inputTokens: Math.floor(22_300_000 * jitter),
+    outputTokens: Math.floor(8_100_000 * jitter),
+    dailySpend: generateDailySpend(1.3 * jitter, today),
+    models: [
+      { name: 'Llama-3.3-70B', cost: round(6.42 * jitter), requests: Math.floor(4_120 * jitter) },
+      { name: 'Qwen2.5-72B', cost: round(4.81 * jitter), requests: Math.floor(3_200 * jitter) },
+      { name: 'Mixtral-8x22B', cost: round(3.92 * jitter), requests: Math.floor(2_180 * jitter) },
+      { name: 'DBRX-Instruct', cost: round(2.15 * jitter), requests: Math.floor(1_120 * jitter) },
+      { name: 'Llama-3.2-11B-Vision', cost: round(1.43 * jitter), requests: Math.floor(620 * jitter) },
+    ],
+  }
+}
+
+function mockGroq(): UsageResult {
+  const jitter = 0.9 + Math.random() * 0.2
+  const today = new Date().getDate()
+  return {
+    totalSpend: round(5.12 * jitter),
+    limit: null,
+    requests: Math.floor(28_900 * jitter),
+    inputTokens: Math.floor(45_600_000 * jitter),
+    outputTokens: Math.floor(15_200_000 * jitter),
+    dailySpend: generateDailySpend(0.35 * jitter, today),
+    models: [
+      { name: 'llama-3.3-70b-versatile', cost: round(2.34 * jitter), requests: Math.floor(12_400 * jitter) },
+      { name: 'mixtral-8x7b-32768', cost: round(1.28 * jitter), requests: Math.floor(9_800 * jitter) },
+      { name: 'gemma2-9b-it', cost: round(0.87 * jitter), requests: Math.floor(4_200 * jitter) },
+      { name: 'llama-3.1-8b-instant', cost: round(0.63 * jitter), requests: Math.floor(2_500 * jitter) },
     ],
   }
 }

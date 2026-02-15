@@ -1,4 +1,4 @@
-export type Provider = 'openai' | 'anthropic' | 'google' | 'deepseek' | 'minimax' | 'qwen' | 'zhipu'
+export type Provider = 'openai' | 'anthropic' | 'google' | 'deepseek' | 'minimax' | 'qwen' | 'zhipu' | 'together' | 'groq'
 
 export interface ApiKeys {
   openai?: string
@@ -8,6 +8,8 @@ export interface ApiKeys {
   minimax?: string
   qwen?: string
   zhipu?: string
+  together?: string
+  groq?: string
 }
 
 export interface UsageData {
@@ -105,5 +107,19 @@ export const PROVIDERS: ProviderConfig[] = [
     color: '#2563EB',
     icon: '◑',
     description: 'GLM-4, GLM-4V, CogView'
+  },
+  {
+    id: 'together',
+    name: 'Together AI',
+    color: '#0EA5E9',
+    icon: '◫',
+    description: 'Llama, Mixtral, DBRX, Qwen'
+  },
+  {
+    id: 'groq',
+    name: 'Groq',
+    color: '#F97316',
+    icon: '◧',
+    description: 'Llama, Mixtral, Gemma (LPU)'
   }
 ]

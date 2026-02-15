@@ -25,6 +25,8 @@ export function Dashboard() {
   const minimax = useUsageData('minimax', keys.minimax, demoMode && true)
   const qwen = useUsageData('qwen', keys.qwen, demoMode && true)
   const zhipu = useUsageData('zhipu', keys.zhipu, demoMode && true)
+  const together = useUsageData('together', keys.together, demoMode && true)
+  const groq = useUsageData('groq', keys.groq, demoMode && true)
 
   const usageByProvider: Record<string, UsageResult | null> = {
     openai: openai.data,
@@ -34,6 +36,8 @@ export function Dashboard() {
     minimax: minimax.data,
     qwen: qwen.data,
     zhipu: zhipu.data,
+    together: together.data,
+    groq: groq.data,
   }
 
   const chartData = activeProviders
