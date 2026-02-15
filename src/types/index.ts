@@ -50,12 +50,15 @@ export interface UsageError {
   isAuth: boolean
 }
 
+export type ProviderStatus = 'active' | 'coming-soon'
+
 export interface ProviderConfig {
   id: Provider
   name: string
   color: string
   icon: string
   description: string
+  status: ProviderStatus
 }
 
 export const PROVIDERS: ProviderConfig[] = [
@@ -64,62 +67,71 @@ export const PROVIDERS: ProviderConfig[] = [
     name: 'OpenAI',
     color: '#00a67e',
     icon: '◈',
-    description: 'GPT-4o, o1, o3, DALL·E, Whisper'
-  },
-  {
-    id: 'anthropic',
-    name: 'Anthropic',
-    color: '#d4a574',
-    icon: '◉',
-    description: 'Claude Opus, Sonnet, Haiku'
-  },
-  {
-    id: 'google',
-    name: 'Google AI',
-    color: '#4285f4',
-    icon: '◆',
-    description: 'Gemini Pro, Flash, Ultra'
+    description: 'GPT-4o, o1, o3, DALL·E, Whisper',
+    status: 'active'
   },
   {
     id: 'deepseek',
     name: 'DeepSeek',
     color: '#4D6BFE',
     icon: '◇',
-    description: 'DeepSeek-V3, DeepSeek-R1'
+    description: 'DeepSeek-V3, DeepSeek-R1',
+    status: 'active'
   },
   {
     id: 'minimax',
     name: 'MiniMax',
     color: '#FF6B35',
     icon: '◎',
-    description: 'MiniMax-M2.5, M2.1, M2'
+    description: 'MiniMax-M2.5, M2.1, M2',
+    status: 'active'
+  },
+  {
+    id: 'anthropic',
+    name: 'Anthropic',
+    color: '#d4a574',
+    icon: '◉',
+    description: 'Claude Opus, Sonnet, Haiku',
+    status: 'coming-soon'
+  },
+  {
+    id: 'google',
+    name: 'Google AI',
+    color: '#4285f4',
+    icon: '◆',
+    description: 'Gemini Pro, Flash, Ultra',
+    status: 'coming-soon'
   },
   {
     id: 'qwen',
     name: 'Qwen (通义千问)',
     color: '#FF6A00',
     icon: '◐',
-    description: 'Qwen-Max, Qwen-Plus, Qwen-Turbo'
+    description: 'Qwen-Max, Qwen-Plus, Qwen-Turbo',
+    status: 'coming-soon'
   },
   {
     id: 'zhipu',
     name: 'Zhipu GLM (智谱)',
     color: '#2563EB',
     icon: '◑',
-    description: 'GLM-4, GLM-4V, CogView'
+    description: 'GLM-4, GLM-4V, CogView',
+    status: 'coming-soon'
   },
   {
     id: 'together',
     name: 'Together AI',
     color: '#0EA5E9',
     icon: '◫',
-    description: 'Llama, Mixtral, DBRX, Qwen'
+    description: 'Llama, Mixtral, DBRX, Qwen',
+    status: 'coming-soon'
   },
   {
     id: 'groq',
     name: 'Groq',
     color: '#F97316',
     icon: '◧',
-    description: 'Llama, Mixtral, Gemma (LPU)'
+    description: 'Llama, Mixtral, Gemma (LPU)',
+    status: 'coming-soon'
   }
 ]

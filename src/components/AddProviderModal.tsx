@@ -13,7 +13,7 @@ export function AddProviderModal({ onClose }: AddProviderModalProps) {
   const [apiKey, setApiKey] = useState('')
   const [show, setShow] = useState(false)
 
-  const availableProviders = PROVIDERS.filter(p => !keys[p.id])
+  const availableProviders = PROVIDERS.filter(p => p.status === 'active' && !keys[p.id])
 
   const handleSave = () => {
     if (selected && apiKey.trim()) {

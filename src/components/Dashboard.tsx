@@ -14,7 +14,9 @@ export function Dashboard() {
   const [showAddModal, setShowAddModal] = useState(false)
   const [demoMode, setDemoMode] = useState(false)
 
-  const activeProviders = PROVIDERS.filter(p => demoMode || keys[p.id])
+  const connectedProviders = PROVIDERS.filter(p => p.status === 'active' && (demoMode || keys[p.id]))
+  const comingSoonProviders = PROVIDERS.filter(p => p.status === 'coming-soon')
+  const activeProviders = connectedProviders
   const showDashboard = demoMode || hasAnyKey
 
   // Fetch usage data for each provider for the summary charts
@@ -89,7 +91,7 @@ export function Dashboard() {
         ))}
       </div>
 
-      {!demoMode && activeProviders.length < PROVIDERS.length && (
+      {!demoMode && connectedProviders.length < PROVIDERS.filter(p => p.status === 'active').length && (
         <button
           onClick={() => setShowAddModal(true)}
           className="mx-auto flex items-center gap-2 px-4 py-2 rounded-lg border border-dashed border-[var(--border)] text-[var(--text-muted)] font-[var(--font-mono)] text-xs cursor-pointer transition-all duration-150 hover:border-[var(--accent)] hover:text-[var(--accent)] hover:bg-[var(--accent-dim)]"
@@ -99,9 +101,32 @@ export function Dashboard() {
         </button>
       )}
 
+      {/* Coming Soon section */}
+      {comingSoonProviders.length > 0 && (
+        <div className="mt-4">
+          <div className="font-[var(--font-mono)] text-[11px] text-[var(--text-muted)] mb-3 flex items-center gap-2">
+            <span className="text-[var(--accent-secondary)]">⏳</span>
+            <span>coming soon</span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+            {comingSoonProviders.map(p => (
+              <div
+                key={p.id}
+                className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] opacity-50"
+              >
+                <span className="text-sm" style={{ color: p.color }}>{p.icon}</span>
+                <div className="min-w-0">
+                  <div className="font-[var(--font-mono)] text-[11px] text-[var(--text-secondary)] truncate">{p.name}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="py-6 text-center">
         <span className="font-[var(--font-mono)] text-[11px] text-[var(--text-muted)]">
-          {activeProviders.length} provider{activeProviders.length !== 1 ? 's' : ''} connected
+          {connectedProviders.length} provider{connectedProviders.length !== 1 ? 's' : ''} connected
           {demoMode && <><span className="mx-2 text-[var(--border)]">·</span>demo data</>}
           <span className="mx-2 text-[var(--border)]">·</span>
           all data stays in your browser
