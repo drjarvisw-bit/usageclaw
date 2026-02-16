@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — UsageClaw</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 720px; margin: 0 auto; padding: 2rem 1rem; color: #e0e0e0; background: #0f0f17; line-height: 1.7; }
+    h1 { color: #fff; margin-bottom: 0.5rem; }
+    h2 { color: #a0a0b0; margin-top: 2rem; }
+    p, li { color: #c0c0d0; }
+    a { color: #60a5fa; }
+    .updated { color: #808090; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>Privacy Policy</h1>
+  <p class="updated">Last updated: 16 February 2026</p>
+
+  <h2>Overview</h2>
+  <p>UsageClaw is a browser extension and web dashboard that helps you monitor AI API usage across providers. We are committed to protecting your privacy.</p>
+
+  <h2>Data Collection</h2>
+  <p><strong>We do not collect, transmit, or store any user data on our servers.</strong></p>
+  <ul>
+    <li>API keys you enter are stored <strong>locally</strong> in your browser (localStorage or chrome.storage.local) and are never sent to UsageClaw or any third party.</li>
+    <li>Usage data is fetched directly from each AI provider's API using your own keys and displayed locally.</li>
+    <li>No analytics, tracking, or telemetry is included.</li>
+  </ul>
+
+  <h2>Data Storage</h2>
+  <ul>
+    <li><strong>Chrome Extension:</strong> API keys and cached usage data are stored in <code>chrome.storage.local</code>, which is sandboxed to the extension.</li>
+    <li><strong>Web App:</strong> API keys are stored in your browser's <code>localStorage</code>.</li>
+    <li>You can delete all stored data at any time by clearing the extension's storage or your browser data.</li>
+  </ul>
+
+  <h2>Third-Party Services</h2>
+  <p>The extension connects directly to the following APIs <strong>only when you provide your own API key</strong>:</p>
+  <ul>
+    <li>OpenAI (api.openai.com)</li>
+    <li>DeepSeek (api.deepseek.com)</li>
+    <li>MiniMax (minimax.io)</li>
+  </ul>
+  <p>Each provider's own privacy policy applies to data exchanged with their APIs.</p>
+
+  <h2>Permissions</h2>
+  <ul>
+    <li><strong>storage:</strong> To save API keys and usage data locally.</li>
+    <li><strong>alarms:</strong> To schedule periodic usage data refresh.</li>
+    <li><strong>Host permissions:</strong> To make direct API calls to AI providers listed above.</li>
+  </ul>
+
+  <h2>Children's Privacy</h2>
+  <p>UsageClaw is not directed at children under 13. We do not knowingly collect data from children.</p>
+
+  <h2>Changes</h2>
+  <p>We may update this policy from time to time. Changes will be posted on this page.</p>
+
+  <h2>Contact</h2>
+  <p>Questions? Email <a href="mailto:drjarvisw@gmail.com">drjarvisw@gmail.com</a></p>
+</body>
+</html>
